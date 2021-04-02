@@ -10,11 +10,11 @@
   ],
   "rules": {
     "prettier/prettier": 2,
-    "no-console": "off",
+    "no-console": ["error", { "allow": ["info", "error"] }],
     "no-loops/no-loops": 2,
     "no-unused-vars": "error",
-    "no-unused-labels":"error",
-    "no-unused-expressions":"error",
+    "no-unused-labels": "error",
+    "no-unused-expressions": "error",
     "semi": "error"
   }
 }
