@@ -14,17 +14,18 @@ export const error = (res: ServerResponse, error: string, statusCode: number): v
   res.statusCode = statusCode;
   res.end(
     JSON.stringify({
-      status: 'fail',
-      error
+      success: false,
+      message: error
     })
   );
 };
 
-export const success = (res: ServerResponse, statusCode: number, data?: string): void => {
+export const success = (res: ServerResponse, statusCode: number, message?: string, data?: string): void => {
   res.statusCode = statusCode;
   res.end(
     JSON.stringify({
-      status: 'success',
+      success: true,
+      message,
       data
     })
   );
