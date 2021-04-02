@@ -15,8 +15,17 @@ export const routeHandler = async (
 };
 
 async function validateRoute(req: IncomingMessage, routes: RouterInterface[]): Promise<boolean> {
+  let isValid = false;
   routes.forEach((element) => {
-    console.info(element + '' + req);
+    const resp =
+      element.method === req.method && req.url?.match(element.path)
+        ? true
+        : element.method === req.method && element.path === req.url
+        ? true
+        : false;
+    if (resp) {
+      isValid = resp;
+    }
   });
-  return true;
+  return isValid;
 }

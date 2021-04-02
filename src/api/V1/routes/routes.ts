@@ -10,7 +10,7 @@ export const routes: RouterInterface[] = [
   },
   {
     method: 'GET',
-    path: /\/posts\/([0-9a-z]+)/,
+    path: /\/api\/v1\/posts\/([0-9a-z]+)/,
     controller: postController.show.bind(postController)
   }
   /*
