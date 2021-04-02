@@ -30,6 +30,23 @@ async function getParams(req: IncomingMessage, routes: RouterInterface[]): Promi
   return params;
 }
 
+function getPostData(req: IncomingMessage): Promise<string> {
+  return new Promise((resolve, reject) => {
+    try {
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
+      });
+      req.on('end', () => {
+        resolve(body);
+      });
+    } catch (e) {
+      reject('');
+      console.error(e);
+    }
+  });
+}
+
 export const routeHandler = async (
   req: IncomingMessage,
   res: ServerResponse,
@@ -41,6 +58,11 @@ export const routeHandler = async (
     error(res, 'Resource not found', 404);
     return false;
   }
+  let body = '';
+  if (req.method === 'POST' || req.method === 'PUT') {
+    body = await getPostData(req);
+  }
+  console.info(body);
   success(res, 200, 'Data returned', '[]');
   return true;
 };
