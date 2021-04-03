@@ -1,5 +1,5 @@
 import { PostController } from '../controllers/PostController';
-import { RouterInterface } from '../../../common/routeInterface';
+import { RouterInterface } from '../../../interfaces/routeInterface';
 import { storePostRequest } from '../validators/StorePostRequest';
 const postController = new PostController();
 

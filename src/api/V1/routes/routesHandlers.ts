@@ -1,7 +1,8 @@
 import { ServerResponse, IncomingMessage } from 'http';
-import { RouterInterface } from '../../../common/routeInterface';
-import { error, success } from '../../../common/helper';
-import { StorePost } from '../validators/StorePostInterface';
+import { RouterInterface } from '../../../interfaces/routeInterface';
+import { error } from '../../../common/helper';
+import { StorePostRequest } from '../validators/StorePostRequestInterface';
+
 async function getIndexRouteFromList(req: IncomingMessage, routes: RouterInterface[]): Promise<number> {
   let indexRoute = -1;
   routes.forEach((element, index) => {
@@ -32,8 +33,8 @@ function getBodyData(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
     try {
       let body = '';
-      req.on('data', (chunk) => {
-        body += chunk.toString();
+      req.on('data', (data) => {
+        body += data.toString();
       });
       req.on('end', () => {
         resolve(body);
@@ -45,27 +46,57 @@ function getBodyData(req: IncomingMessage): Promise<string> {
   });
 }
 
+async function setHeaders(res: ServerResponse): Promise<ServerResponse> {
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Cache-Control', 'no-store');
+  return res;
+}
+
+async function executeGetAndDeleteRequest(
+  req: IncomingMessage,
+  res: ServerResponse,
+  routes: RouterInterface[],
+  indexRoute: number
+): Promise<void> {
+  const params = await getParams(req, <string>routes[indexRoute].path);
+  switch (routes[indexRoute].method) {
+    case 'GET':
+      await routes[indexRoute].controller(res, params);
+      break;
+    case 'DELETE':
+      break;
+  }
+}
+
+async function executePostRequest(
+  req: IncomingMessage,
+  res: ServerResponse,
+  routes: RouterInterface[],
+  indexRoute: number
+): Promise<void> {
+  if (routes[indexRoute].method === 'POST') {
+    const body = await getBodyData(req);
+    const params = await getParams(req, <string>routes[indexRoute].path);
+    const validateRequest: StorePostRequest = await routes[indexRoute].validate(body);
+    if (Object.keys(validateRequest).length) {
+      error(res, 422, 'Invalid Request', validateRequest);
+    } else {
+      await routes[indexRoute].controller(res, body, params);
+    }
+  }
+}
 export const routeHandler = async (
   req: IncomingMessage,
   res: ServerResponse,
   routes: RouterInterface[]
 ): Promise<boolean> => {
-  const indexIsValid = await getIndexRouteFromList(req, routes);
-  if (indexIsValid < 0) {
+  await setHeaders(res);
+  const indexRoute = await getIndexRouteFromList(req, routes);
+  if (indexRoute < 0) {
     error(res, 404, 'Resource not found');
     return false;
   }
-  await getParams(req, <string>routes[indexIsValid].path);
-  let body = '';
-
-  if (req.method === 'POST' || req.method === 'PUT') {
-    body = await getBodyData(req);
-    const validateRequest: StorePost = await routes[indexIsValid].validate(body);
-    if (Object.keys(validateRequest).length) {
-      error(res, 422, 'Invalid Request', validateRequest);
-      return true;
-    }
-  }
-  success(res, 200, 'Data returned', '[]');
+  await executePostRequest(req, res, routes, indexRoute);
+  await executeGetAndDeleteRequest(req, res, routes, indexRoute);
   return true;
 };
