@@ -3,11 +3,6 @@ export interface StorePost {
   content?: string;
 }
 
-export async function storePostRequest(body: string): Promise<StorePost> {
-  const errors: StorePost = await verifyFieldsPost(body);
-  return errors;
-}
-
 async function verifyFieldsPost(body: string): Promise<StorePost> {
   const errors: StorePost = <StorePost>{};
   const dataPost: StorePost = JSON.parse(body);
@@ -32,5 +27,10 @@ async function verifyFieldsPost(body: string): Promise<StorePost> {
       break;
   }
 
+  return errors;
+}
+
+export async function storePostRequest(body: string): Promise<StorePost> {
+  const errors: StorePost = await verifyFieldsPost(body);
   return errors;
 }

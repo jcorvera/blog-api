@@ -4,7 +4,7 @@ export interface Post extends Document {
   title: string;
   slug: string;
   content: string;
-  created_at?: Date;
+  created_at: Date;
 }
 
 const PostSchema: Schema = new Schema({

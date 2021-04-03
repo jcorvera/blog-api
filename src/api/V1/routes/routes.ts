@@ -3,6 +3,7 @@ import { CommentController } from '../controllers/CommentController';
 import { RouterInterface } from '../../../interfaces/routeInterface';
 import { storePostRequest } from '../validators/StorePostRequest';
 import { storeCommentRequest } from '../validators/StoreCommentRequest';
+
 const postController = new PostController();
 const commentController = new CommentController();
 

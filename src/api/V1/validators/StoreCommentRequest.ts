@@ -2,11 +2,6 @@ interface StoreComment {
   content?: string;
 }
 
-export async function storeCommentRequest(body: string): Promise<StoreComment> {
-  const errors: StoreComment = await verifyFieldsComment(body);
-  return errors;
-}
-
 async function verifyFieldsComment(body: string): Promise<StoreComment> {
   const errors: StoreComment = <StoreComment>{};
   const dataComment: StoreComment = JSON.parse(body);
@@ -24,5 +19,10 @@ async function verifyFieldsComment(body: string): Promise<StoreComment> {
       break;
   }
 
+  return errors;
+}
+
+export async function storeCommentRequest(body: string): Promise<StoreComment> {
+  const errors: StoreComment = await verifyFieldsComment(body);
   return errors;
 }
