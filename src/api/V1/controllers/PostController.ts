@@ -3,8 +3,7 @@ import { generateSlug, error, success, formatDate } from '../../../common/helper
 import Post from '../../../models/Post';
 
 interface Body {
-  title: string;
-  content: string;
+  data: { type: string; attributes: { title: string; content: string } };
 }
 
 interface PostResponse {
@@ -16,7 +15,7 @@ interface PostResponse {
 export class PostController {
   public async store(res: ServerResponse, body: string): Promise<void> {
     const postData: Body = JSON.parse(body);
-    const { title, content } = postData;
+    const { title, content } = postData.data.attributes;
     const getSlug = await generateSlug(title);
     const slug = getSlug + '-' + Date.now();
     try {
@@ -33,7 +32,7 @@ export class PostController {
     try {
       const post: any = await Post.findById(post_id).exec();
       if (!post) {
-        return error(res, 404, 'Post not found!', '');
+        return error(res, 404, 'Post not found!', `Post with <${post_id}> not exists`);
       }
       const response: PostResponse = await this.getPostResponse(post);
       success(res, 200, 'Post Returned!', response);
@@ -47,7 +46,7 @@ export class PostController {
     try {
       const post: any = await Post.findByIdAndDelete(post_id).exec();
       if (!post) {
-        return error(res, 404, 'Post not found !', '');
+        return error(res, 404, 'Post not found !', `Post with <${post_id}> not exists`);
       }
       success(res, 200, 'Post Deleted!', '');
     } catch (err) {

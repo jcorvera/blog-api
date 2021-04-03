@@ -3,7 +3,7 @@ import { error, success, formatDate } from '../../../common/helper';
 import Comment from '../../../models/Comment';
 
 interface Body {
-  content: string;
+  data: { type: string; attributes: { content: string } };
 }
 
 interface CommentCollection extends Array<CommentResponse> {
@@ -20,7 +20,7 @@ export class CommentController {
   public async store(res: ServerResponse, body: string, params: string[]): Promise<void> {
     const [post] = params;
     const commentData: Body = JSON.parse(body);
-    const { content } = commentData;
+    const { content } = commentData.data.attributes;
     try {
       const comment: any = await Comment.create({ post, content });
       const response: CommentResponse = await this.getCommentResponse(comment);
@@ -35,7 +35,7 @@ export class CommentController {
     try {
       const comment: any = await Comment.findById(comment_id).exec();
       if (!comment) {
-        return error(res, 404, 'Comment not found!', '');
+        return error(res, 404, 'Comment not found!', `Comment with <${comment_id}> not exists`);
       }
       const response: CommentResponse = await this.getCommentResponse(comment);
       success(res, 200, 'Comment Returned!', response);
@@ -49,7 +49,7 @@ export class CommentController {
     try {
       const comments: any = await Comment.find({ post }, '_id content created_at').exec();
       const response = await this.getCommentCollection(comments);
-      success(res, 201, 'Comments returned!', response);
+      success(res, 200, 'Comments returned!', response);
     } catch (err) {
       error(res, 500, 'Something went wrong !', err);
     }
@@ -60,7 +60,7 @@ export class CommentController {
     try {
       const comment: any = await Comment.findByIdAndDelete(comment_id).exec();
       if (!comment) {
-        return error(res, 404, 'Comment not found !', '');
+        return error(res, 404, 'Comment not found !', `Comment with <${comment_id}> not exists`);
       }
       success(res, 200, 'Comment Deleted!', '');
     } catch (err) {
