@@ -1,13 +1,16 @@
-import { StorePostRequest } from './StorePostRequestInterface';
+export interface StorePost {
+  title?: string;
+  content?: string;
+}
 
-export async function storePostRequest(body: string): Promise<StorePostRequest> {
-  const errors: StorePostRequest = await verifyFieldsPost(body);
+export async function storePostRequest(body: string): Promise<StorePost> {
+  const errors: StorePost = await verifyFieldsPost(body);
   return errors;
 }
 
-async function verifyFieldsPost(body: string): Promise<StorePostRequest> {
-  const errors: StorePostRequest = <StorePostRequest>{};
-  const dataPost: StorePostRequest = JSON.parse(body);
+async function verifyFieldsPost(body: string): Promise<StorePost> {
+  const errors: StorePost = <StorePost>{};
+  const dataPost: StorePost = JSON.parse(body);
 
   if (!Object.keys(dataPost).length) {
     errors.title = 'Title es required !';

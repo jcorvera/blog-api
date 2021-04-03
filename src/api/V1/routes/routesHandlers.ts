@@ -1,7 +1,6 @@
 import { ServerResponse, IncomingMessage } from 'http';
 import { RouterInterface } from '../../../interfaces/routeInterface';
 import { error } from '../../../common/helper';
-import { StorePostRequest } from '../validators/post/StorePostRequestInterface';
 
 async function getIndexRouteFromList(req: IncomingMessage, routes: RouterInterface[]): Promise<number> {
   let indexRoute = -1;
@@ -78,7 +77,7 @@ async function executePostRequest(
   if (routes[indexRoute].method === 'POST') {
     const body = await getBodyData(req);
     const params = await getParams(req, <string>routes[indexRoute].path);
-    const validateRequest: StorePostRequest = await routes[indexRoute].validate(body);
+    const validateRequest = await routes[indexRoute].validate(body);
     if (Object.keys(validateRequest).length) {
       error(res, 422, 'Invalid Request', validateRequest);
     } else {
@@ -86,6 +85,7 @@ async function executePostRequest(
     }
   }
 }
+
 export const routeHandler = async (
   req: IncomingMessage,
   res: ServerResponse,
