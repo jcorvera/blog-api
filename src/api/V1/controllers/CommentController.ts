@@ -6,6 +6,10 @@ interface Body {
   content: string;
 }
 
+interface CommentCollection extends Array<CommentResponse> {
+  [index: number]: CommentResponse;
+}
+
 interface CommentResponse {
   id: string;
   type: string;
@@ -26,12 +30,45 @@ export class CommentController {
     }
   }
 
+  public async show(res: ServerResponse, params: string[]): Promise<void> {
+    const [post] = params;
+    try {
+      const comments: any = await Comment.find({ post }, '_id content created_at').exec();
+      const response = await this.getCommentCollection(comments);
+      success(res, 201, 'Comments returned!', response);
+    } catch (err) {
+      error(res, 500, 'something went wrong !', err);
+    }
+  }
+
+  public async destroy(res: ServerResponse, params: string[]): Promise<void> {
+    const [comment_id] = params;
+    try {
+      const comment: any = await Comment.findByIdAndDelete(comment_id).exec();
+      if (!comment) {
+        return error(res, 404, 'Comment not found !', '');
+      }
+      success(res, 200, 'Comment Deleted!', '');
+    } catch (err) {
+      error(res, 500, 'something went wrong !', err);
+    }
+  }
+
   private async getCommentResponse(comment: any): Promise<CommentResponse> {
     const date: string = await formatDate(<Date>comment.created_at);
     return {
       id: comment._id,
-      type: 'comment',
+      type: 'comments',
       attributes: { content: comment.content, created_at: date }
     };
+  }
+
+  private async getCommentCollection(comments: any): Promise<CommentCollection> {
+    const data: CommentCollection = <CommentCollection>[];
+    for (const comment of comments) {
+      const response: CommentResponse = await this.getCommentResponse(comment);
+      data.push(response);
+    }
+    return data;
   }
 }

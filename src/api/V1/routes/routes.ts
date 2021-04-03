@@ -30,16 +30,15 @@ export const routes: RouterInterface[] = [
     path: /\/api\/v1\/posts\/([0-9a-z]+)\/comments/,
     controller: commentController.store.bind(commentController),
     validate: storeCommentRequest
-  }
-  /*
-  {
-    method: 'GET',
-    path: /\/api\/v1\/posts\/([0-9a-z]+)\/comments\/([0-9a-z]+)/,
-    controller: postController.show.bind(postController)
   },
   {
     method: 'DELETE',
-    path: /\/api\/v1\/posts\/([0-9a-z]+)\/comments\/([0-9a-z]+)/,
-    controller: postController.destroy.bind(postController)
-  }*/
+    path: /\/api\/v1\/comments\/([0-9a-z]+)/,
+    controller: commentController.destroy.bind(commentController)
+  },
+  {
+    method: 'GET',
+    path: /\/api\/v1\/posts\/([0-9a-z]+)\/comments/,
+    controller: commentController.show.bind(commentController)
+  }
 ];
