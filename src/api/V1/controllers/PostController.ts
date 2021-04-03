@@ -33,7 +33,7 @@ export class PostController {
     try {
       const post: any = await Post.findById(post_id).exec();
       if (!post) {
-        return error(res, 404, 'Post not found', '');
+        return error(res, 404, 'Post not found!', '');
       }
       const response: PostResponse = await this.getPostResponse(post);
       success(res, 200, 'Post Returned!', response);
@@ -47,7 +47,7 @@ export class PostController {
     try {
       const post: any = await Post.findByIdAndDelete(post_id).exec();
       if (!post) {
-        return error(res, 404, 'Post not found', '');
+        return error(res, 404, 'Post not found !', '');
       }
       success(res, 200, 'Post Deleted!', '');
     } catch (err) {
