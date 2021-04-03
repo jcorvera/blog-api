@@ -1,8 +1,8 @@
 import { PostController } from '../controllers/PostController';
 import { CommentController } from '../controllers/CommentController';
 import { RouterInterface } from '../../../interfaces/routeInterface';
-import { storePostRequest } from '../validators/post/StorePostRequest';
-import { storeCommentRequest } from '../validators/comment/StoreCommentRequest';
+import { storePostRequest } from '../validators/StorePostRequest';
+import { storeCommentRequest } from '../validators/StoreCommentRequest';
 const postController = new PostController();
 const commentController = new CommentController();
 
@@ -38,7 +38,12 @@ export const routes: RouterInterface[] = [
   },
   {
     method: 'GET',
-    path: /\/api\/v1\/posts\/([0-9a-z]+)\/comments/,
+    path: /\/api\/v1\/comments\/([0-9a-z]+)/,
     controller: commentController.show.bind(commentController)
+  },
+  {
+    method: 'GET',
+    path: /\/api\/v1\/posts\/([0-9a-z]+)\/comments/,
+    controller: commentController.getComments.bind(commentController)
   }
 ];

@@ -26,18 +26,32 @@ export class CommentController {
       const response: CommentResponse = await this.getCommentResponse(comment);
       success(res, 201, 'Comment created!', response);
     } catch (err) {
-      error(res, 500, 'something went wrong !', err);
+      error(res, 500, 'Something went wrong !', err);
     }
   }
 
   public async show(res: ServerResponse, params: string[]): Promise<void> {
+    const [comment_id] = params;
+    try {
+      const comment: any = await Comment.findById(comment_id).exec();
+      if (!comment) {
+        return error(res, 404, 'Comment not found!', '');
+      }
+      const response: CommentResponse = await this.getCommentResponse(comment);
+      success(res, 200, 'Comment Returned!', response);
+    } catch (err) {
+      error(res, 500, 'Something went wrong !', err);
+    }
+  }
+
+  public async getComments(res: ServerResponse, params: string[]): Promise<void> {
     const [post] = params;
     try {
       const comments: any = await Comment.find({ post }, '_id content created_at').exec();
       const response = await this.getCommentCollection(comments);
       success(res, 201, 'Comments returned!', response);
     } catch (err) {
-      error(res, 500, 'something went wrong !', err);
+      error(res, 500, 'Something went wrong !', err);
     }
   }
 
@@ -50,7 +64,7 @@ export class CommentController {
       }
       success(res, 200, 'Comment Deleted!', '');
     } catch (err) {
-      error(res, 500, 'something went wrong !', err);
+      error(res, 500, 'Something went wrong !', err);
     }
   }
 
