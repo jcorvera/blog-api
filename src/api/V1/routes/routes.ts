@@ -14,11 +14,10 @@ export const routes: RouterInterface[] = [
     method: 'GET',
     path: /\/api\/v1\/posts\/([0-9a-z]+)/,
     controller: postController.show.bind(postController)
-  }
-  /*
+  },
   {
     method: 'DELETE',
-    path: /\/posts\/([0-9a-z]+)/,
-    handler: postController.destroy.bind(postController)
-  }*/
+    path: /\/api\/v1\/posts\/([0-9a-z]+)/,
+    controller: postController.destroy.bind(postController)
+  }
 ];

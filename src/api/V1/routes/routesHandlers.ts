@@ -64,6 +64,7 @@ async function executeGetAndDeleteRequest(
       await routes[indexRoute].controller(res, params);
       break;
     case 'DELETE':
+      await routes[indexRoute].controller(res, params);
       break;
   }
 }

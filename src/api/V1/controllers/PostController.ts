@@ -28,7 +28,7 @@ export class PostController {
         type: 'posts',
         attributes: { slug: post.slug, title: post.title, content: post.content, created_at: date }
       };
-      success(res, 200, 'Post created!', response);
+      success(res, 201, 'Post created!', response);
     } catch (err) {
       error(res, 500, 'something went wrong !', err);
     }
@@ -38,7 +38,6 @@ export class PostController {
     try {
       const [post_id] = params;
       const post: any = await Post.findById(post_id).exec();
-
       if (!post) {
         error(res, 404, 'Post not found', '');
       } else {
@@ -49,6 +48,20 @@ export class PostController {
           attributes: { slug: post.slug, title: post.title, content: post.content, created_at: date }
         };
         success(res, 200, 'Post Returned!', response);
+      }
+    } catch (err) {
+      error(res, 500, 'something went wrong !', err);
+    }
+  }
+
+  public async destroy(res: ServerResponse, params: string[]): Promise<void> {
+    try {
+      const [post_id] = params;
+      const post: any = await Post.findByIdAndDelete(post_id).exec();
+      if (!post) {
+        error(res, 404, 'Post not found', '');
+      } else {
+        success(res, 200, 'Post Deleted!', '');
       }
     } catch (err) {
       error(res, 500, 'something went wrong !', err);
