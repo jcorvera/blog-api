@@ -1,6 +1,6 @@
 import { PostController } from '../controllers/PostController';
 import { RouterInterface } from '../../../interfaces/routeInterface';
-import { storePostRequest } from '../validators/StorePostRequest';
+import { storePostRequest } from '../validators/post/StorePostRequest';
 const postController = new PostController();
 
 export const routes: RouterInterface[] = [
