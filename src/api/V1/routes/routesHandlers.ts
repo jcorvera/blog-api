@@ -1,7 +1,7 @@
 import { ServerResponse, IncomingMessage } from 'http';
 import { RouterInterface } from '../../../interfaces/routeInterface';
 import { error } from '../../../common/helper';
-import { StorePostRequest } from '../validators/StorePostRequestInterface';
+import { StorePostRequest } from '../validators/post/StorePostRequestInterface';
 
 async function getIndexRouteFromList(req: IncomingMessage, routes: RouterInterface[]): Promise<number> {
   let indexRoute = -1;
