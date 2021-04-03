@@ -1,12 +1,14 @@
 import { PostController } from '../controllers/PostController';
 import { RouterInterface } from '../../../common/routeInterface';
+import { storePostRequest } from '../validators/StorePostRequest';
 const postController = new PostController();
 
 export const routes: RouterInterface[] = [
   {
     method: 'POST',
     path: '/api/v1/posts',
-    controller: postController.store.bind(postController)
+    controller: postController.store.bind(postController),
+    validate: storePostRequest
   },
   {
     method: 'GET',

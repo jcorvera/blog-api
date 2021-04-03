@@ -7,7 +7,7 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "start:dev": "nodemon",
+    "dev": "nodemon",
     "build": "rimraf ./dist && tsc"
   },
   "keywords": [],

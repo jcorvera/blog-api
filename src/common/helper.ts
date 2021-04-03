@@ -10,12 +10,13 @@ export const validationError = (res: ServerResponse, error: string, statusCode: 
   );
 };
 
-export const error = (res: ServerResponse, error: string, statusCode: number): void => {
+export const error = (res: ServerResponse, statusCode: number, message: string, errors?: any): void => {
   res.statusCode = statusCode;
   res.end(
     JSON.stringify({
       success: false,
-      message: error
+      message,
+      errors
     })
   );
 };

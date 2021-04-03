@@ -1,10 +1,10 @@
 import { ServerResponse, IncomingMessage } from 'http';
 import { RouterInterface } from '../../../common/routeInterface';
 import { error, success } from '../../../common/helper';
-
-async function validateRoute(req: IncomingMessage, routes: RouterInterface[]): Promise<boolean> {
-  let isValid = false;
-  routes.forEach((element) => {
+import { StorePost } from '../validators/StorePostInterface';
+async function getIndexRouteFromList(req: IncomingMessage, routes: RouterInterface[]): Promise<number> {
+  let indexRoute = -1;
+  routes.forEach((element, index) => {
     const resp =
       element.method === req.method && req.url?.match(element.path)
         ? true
@@ -12,25 +12,23 @@ async function validateRoute(req: IncomingMessage, routes: RouterInterface[]): P
         ? true
         : false;
     if (resp) {
-      isValid = resp;
+      indexRoute = index;
     }
   });
-  return isValid;
+  return indexRoute;
 }
 
-async function getParams(req: IncomingMessage, routes: RouterInterface[]): Promise<string[]> {
+async function getParams(req: IncomingMessage, path: string): Promise<string[]> {
   const params: string[] = [];
-  routes.forEach((element) => {
-    if (element.method === req.method && req.url?.match(element.path)) {
-      const data: RegExpMatchArray | null = req.url?.match(element.path);
-      params.push(data ? data[1] : '');
-      params.push(data ? data[2] : '');
-    }
-  });
+  if (req.url?.match(path)) {
+    const data: RegExpMatchArray | null = req.url?.match(path);
+    params.push(data ? data[1] : '');
+    params.push(data ? data[2] : '');
+  }
   return params;
 }
 
-function getPostData(req: IncomingMessage): Promise<string> {
+function getBodyData(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
     try {
       let body = '';
@@ -52,17 +50,22 @@ export const routeHandler = async (
   res: ServerResponse,
   routes: RouterInterface[]
 ): Promise<boolean> => {
-  const isRouteValid = await validateRoute(req, routes);
-  await getParams(req, routes);
-  if (!isRouteValid) {
-    error(res, 'Resource not found', 404);
+  const indexIsValid = await getIndexRouteFromList(req, routes);
+  if (indexIsValid < 0) {
+    error(res, 404, 'Resource not found');
     return false;
   }
+  await getParams(req, <string>routes[indexIsValid].path);
   let body = '';
+
   if (req.method === 'POST' || req.method === 'PUT') {
-    body = await getPostData(req);
+    body = await getBodyData(req);
+    const validateRequest: StorePost = await routes[indexIsValid].validate(body);
+    if (Object.keys(validateRequest).length) {
+      error(res, 422, 'Invalid Request', validateRequest);
+      return true;
+    }
   }
-  console.info(body);
   success(res, 200, 'Data returned', '[]');
   return true;
 };
