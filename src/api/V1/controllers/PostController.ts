@@ -19,15 +19,9 @@ export class PostController {
     const { title, content } = postData;
     const getSlug = await generateSlug(title);
     const slug = getSlug + '-' + Date.now();
-
     try {
       const post: any = await Post.create({ title, slug, content });
-      const date: string = await formatDate(<Date>post.created_at);
-      const response: PostResponse = {
-        id: post._id,
-        type: 'posts',
-        attributes: { slug: post.slug, title: post.title, content: post.content, created_at: date }
-      };
+      const response: PostResponse = await this.getPostResponse(post);
       success(res, 201, 'Post created!', response);
     } catch (err) {
       error(res, 500, 'something went wrong !', err);
@@ -41,12 +35,7 @@ export class PostController {
       if (!post) {
         error(res, 404, 'Post not found', '');
       } else {
-        const date: string = await formatDate(<Date>post.created_at);
-        const response: PostResponse = {
-          id: post._id,
-          type: 'posts',
-          attributes: { slug: post.slug, title: post.title, content: post.content, created_at: date }
-        };
+        const response: PostResponse = await this.getPostResponse(post);
         success(res, 200, 'Post Returned!', response);
       }
     } catch (err) {
@@ -66,5 +55,14 @@ export class PostController {
     } catch (err) {
       error(res, 500, 'something went wrong !', err);
     }
+  }
+
+  private async getPostResponse(post: any): Promise<PostResponse> {
+    const date: string = await formatDate(<Date>post.created_at);
+    return {
+      id: post._id,
+      type: 'posts',
+      attributes: { slug: post.slug, title: post.title, content: post.content, created_at: date }
+    };
   }
 }
