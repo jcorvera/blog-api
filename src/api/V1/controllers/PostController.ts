@@ -29,29 +29,27 @@ export class PostController {
   }
 
   public async show(res: ServerResponse, params: string[]): Promise<void> {
+    const [post_id] = params;
     try {
-      const [post_id] = params;
       const post: any = await Post.findById(post_id).exec();
       if (!post) {
-        error(res, 404, 'Post not found', '');
-      } else {
-        const response: PostResponse = await this.getPostResponse(post);
-        success(res, 200, 'Post Returned!', response);
+        return error(res, 404, 'Post not found', '');
       }
+      const response: PostResponse = await this.getPostResponse(post);
+      success(res, 200, 'Post Returned!', response);
     } catch (err) {
       error(res, 500, 'something went wrong !', err);
     }
   }
 
   public async destroy(res: ServerResponse, params: string[]): Promise<void> {
+    const [post_id] = params;
     try {
-      const [post_id] = params;
       const post: any = await Post.findByIdAndDelete(post_id).exec();
       if (!post) {
-        error(res, 404, 'Post not found', '');
-      } else {
-        success(res, 200, 'Post Deleted!', '');
+        return error(res, 404, 'Post not found', '');
       }
+      success(res, 200, 'Post Deleted!', '');
     } catch (err) {
       error(res, 500, 'something went wrong !', err);
     }
