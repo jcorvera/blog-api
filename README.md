@@ -2,6 +2,22 @@
 
 In this blog api we don't use express to manage routes, just we use mongoose and http modules of node.js.
 
+### FOLDER STRUCTURE
+
+```
+DOCS -- insomnia file
+src
+└── app.ts  -- app entry point
+└── /api
+        └── /Controllers
+        └── /Validators
+        └── /routes
+└── /common    -- Here we have helpers
+└── /config    -- settings env varibles
+└── /interfacse     -- common interfaces
+└── /models         -- database models 
+```
+
 ### ENPOINTS
 <hr>
 
