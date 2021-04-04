@@ -3,6 +3,7 @@
 In this blog api we don't use express to manage routes, just we use mongoose and http modules of node.js.
 
 ### FOLDER STRUCTURE
+<hr>
 
 ```
 DOCS -- insomnia file
