@@ -2,6 +2,11 @@
 
 In this blog api we don't use express to manage routes, just we use mongoose and http modules of node.js.
 
+### POSTMAN DOCUMENTATION
+<hr>
+https://documenter.getpostman.com/view/10048789/TzCQZm36
+
+
 ### FOLDER STRUCTURE
 <hr>
 
