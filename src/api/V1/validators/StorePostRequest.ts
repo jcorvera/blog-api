@@ -1,4 +1,4 @@
-interface postRequest {
+interface PostRequest {
   data: { type?: string; attributes?: { title: string; content: string } };
 }
 
@@ -12,7 +12,7 @@ interface Errors {
 
 async function verifyFieldsPost(body: string): Promise<Errors> {
   const errors: Errors = <Errors>{};
-  const dataPost: postRequest = JSON.parse(body);
+  const dataPost: PostRequest = JSON.parse(body);
 
   switch (Object.keys(dataPost).length > 0 || !Object.keys(dataPost).length) {
     case !dataPost.data:

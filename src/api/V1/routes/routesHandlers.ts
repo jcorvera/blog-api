@@ -94,7 +94,7 @@ export const routeHandler = async (
   await setHeaders(res);
   const indexRoute = await getIndexRouteFromList(req, routes);
   if (indexRoute < 0) {
-    error(res, 404, 'Resource not found');
+    error(res, 404, 'Resource not found!');
     return false;
   }
   await executePostRequest(req, res, routes, indexRoute);

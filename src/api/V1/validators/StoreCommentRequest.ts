@@ -1,4 +1,4 @@
-interface commentRequest {
+interface CommentRequest {
   data: { type?: string; attributes?: { content: string } };
 }
 
@@ -11,7 +11,7 @@ interface Errors {
 
 async function verifyFieldsComment(body: string): Promise<Errors> {
   const errors: Errors = <Errors>{};
-  const dataComment: commentRequest = JSON.parse(body);
+  const dataComment: CommentRequest = JSON.parse(body);
 
   switch (Object.keys(dataComment).length > 0 || !Object.keys(dataComment).length) {
     case !dataComment.data:
