@@ -3,6 +3,8 @@ interface postRequest {
 }
 
 interface Errors {
+  data?: string;
+  attributes?: string;
   type?: string;
   title?: string;
   content?: string;
@@ -12,13 +14,13 @@ async function verifyFieldsPost(body: string): Promise<Errors> {
   const errors: Errors = <Errors>{};
   const dataPost: postRequest = JSON.parse(body);
 
-  if (!Object.keys(dataPost).length) {
-    errors.type = 'Type is required';
-    errors.title = 'Title es required !';
-    errors.content = 'Content is required !';
-  }
-
-  switch (Object.keys(dataPost).length > 0) {
+  switch (Object.keys(dataPost).length > 0 || !Object.keys(dataPost).length) {
+    case !dataPost.data:
+      errors.data = 'Data is required !';
+      break;
+    case !dataPost.data.attributes:
+      errors.attributes = 'Attributes is required !';
+      break;
     case !dataPost.data.type:
       errors.type = 'Type is required !';
       break;

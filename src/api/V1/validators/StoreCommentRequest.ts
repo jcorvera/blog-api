@@ -3,6 +3,8 @@ interface commentRequest {
 }
 
 interface Errors {
+  data?: string;
+  attributes?: string;
   type?: string;
   content?: string;
 }
@@ -11,12 +13,13 @@ async function verifyFieldsComment(body: string): Promise<Errors> {
   const errors: Errors = <Errors>{};
   const dataComment: commentRequest = JSON.parse(body);
 
-  if (!Object.keys(dataComment).length) {
-    errors.type = 'Type is required !';
-    errors.content = 'Content is required !';
-  }
-
-  switch (Object.keys(dataComment).length > 0) {
+  switch (Object.keys(dataComment).length > 0 || !Object.keys(dataComment).length) {
+    case !dataComment.data:
+      errors.data = 'Data is required !';
+      break;
+    case !dataComment.data.attributes:
+      errors.attributes = 'Attributes is required !';
+      break;
     case !dataComment.data.type:
       errors.type = 'Type is required !';
       break;
