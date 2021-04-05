@@ -90,14 +90,16 @@ export const routeHandler = async (
   req: IncomingMessage,
   res: ServerResponse,
   routes: RouterInterface[]
-): Promise<boolean> => {
-  await setHeaders(res);
-  const indexRoute = await getIndexRouteFromList(req, routes);
-  if (indexRoute < 0) {
-    error(res, 404, 'Resource not found!');
-    return false;
+): Promise<void> => {
+  try {
+    await setHeaders(res);
+    const indexRoute = await getIndexRouteFromList(req, routes);
+    if (indexRoute < 0) {
+      return error(res, 404, 'Resource not found!');
+    }
+    await executePostRequest(req, res, routes, indexRoute);
+    await executeGetAndDeleteRequest(req, res, routes, indexRoute);
+  } catch (err) {
+    error(res, 500, 'Something went wrong !', err);
   }
-  await executePostRequest(req, res, routes, indexRoute);
-  await executeGetAndDeleteRequest(req, res, routes, indexRoute);
-  return true;
 };
